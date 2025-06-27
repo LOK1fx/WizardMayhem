@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PlayerHUDRoot : MonoBehaviour
 {
+    [SerializeField] private UISpellSelectionMenu _spellSelectionMenu;
+
     private PlayerCharacter _player;
 
     public void Bind(PlayerCharacter player)
@@ -10,6 +12,10 @@ public class PlayerHUDRoot : MonoBehaviour
 
         _player.CurrentStuff.OnStartSpellSelection += OnStartSpellSelection;
         _player.CurrentStuff.OnEndSpellSelection += OnEndSpellSelection;
+
+        _spellSelectionMenu.Constuct(_player);
+        _spellSelectionMenu.AddSpells(_player.CurrentStuff.GetInitialSpells());
+        _spellSelectionMenu.Hide();
     }
 
     private void OnDestroy()
@@ -20,11 +26,17 @@ public class PlayerHUDRoot : MonoBehaviour
 
     private void OnEndSpellSelection()
     {
-        throw new System.NotImplementedException();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        _spellSelectionMenu.Hide();
     }
 
     private void OnStartSpellSelection()
     {
-        throw new System.NotImplementedException();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        _spellSelectionMenu.Show();
     }
 }

@@ -2,7 +2,11 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
+    
     public float Sensitivity => _sensitivity;
+
+    [SerializeField] private Transform _body;
+    [Space]
     [SerializeField] private float _sensitivity = 8;
 
     [Space]
@@ -10,6 +14,7 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private float _maxPitch = 90f;
 
     private float _pitch;
+    private float _yaw;
 
     private void Start()
     {
@@ -20,11 +25,19 @@ public class PlayerCamera : MonoBehaviour
     private void Update()
     {
         _pitch = Mathf.Clamp(_pitch, _minPitch, _maxPitch);
+        if (_yaw % 360 == 0)
+            _yaw = 0;
+
         transform.localRotation = Quaternion.Euler(Vector3.right * _pitch);
+        _body.localRotation = Quaternion.Euler(Vector3.up * _yaw);
     }
 
-    public void SetInput(float verticalDelta)
+    public void SetInput(Vector2 mouseDelta)
     {
-        _pitch -= verticalDelta * _sensitivity;
+        if (Cursor.lockState == CursorLockMode.None)
+            return;
+
+        _pitch -= mouseDelta.y * _sensitivity;
+        _yaw += mouseDelta.x * _sensitivity;
     }
 }

@@ -4,11 +4,11 @@ public class SpellAffectable : MonoBehaviour, IFireSpellAffectable
 {
     private float _currentBurnTimer;
 
-    public void AffectFire(FireSpellData data)
+    public void AffectFire(FireSpell spell)
     {
         _currentBurnTimer += Time.deltaTime;
 
-        if (_currentBurnTimer >= data.TimeToBurn)
+        if (_currentBurnTimer >= spell.TimeToBurn)
             Destroy(gameObject);
     }
 }

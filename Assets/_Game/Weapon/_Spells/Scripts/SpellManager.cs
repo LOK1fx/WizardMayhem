@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SpellManager : MonoBehaviour
 {
-    private List<ISpell> _allSpells = new();
+    private readonly List<SpellBase> _allSpells = new();
 
     private void Update()
     {
@@ -22,12 +22,17 @@ public class SpellManager : MonoBehaviour
         }
     }
 
-    public void RegisterSpell<T>(SpellBase<T> spell) where T : SpellData
+    public void RegisterSpell(SpellBase spell)
     {
         _allSpells.Add(spell);
     }
 
-    public bool TryGetSpellInstance(ESpellId id, out ISpell spell)
+    public void RegisterSpells(List<SpellBase> spells)
+    {
+        _allSpells.AddRange(spells);
+    }
+
+    public bool TryGetSpellInstance(ESpellId id, out SpellBase spell)
     {
         spell = _allSpells
             .Where(s => s.Id == id)

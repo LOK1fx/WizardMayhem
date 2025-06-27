@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(SpellManager))]
@@ -7,9 +9,15 @@ public class Staff : MonoBehaviour
     public event Action OnStartSpellSelection;
     public event Action OnEndSpellSelection;
 
-    public ISpell CurrentSpell { get; private set; }
+    public SpellBase CurrentSpell { get; private set; }
     public PlayerCharacter Owner { get; private set; }
 
+
+    [SerializeField] private List<ESpellId> _initialSpells = new();
+    [SerializeField, SerializeReference, NonReorderable] private SpellBase[] _spells = new SpellBase[1]
+    {
+        new FireSpell(),
+    };
 
     [SerializeField] private StaffData _data;
 
@@ -19,8 +27,7 @@ public class Staff : MonoBehaviour
     {
         _spellManager = GetComponent<SpellManager>();
 
-        _spellManager.RegisterSpell(new FireSpell());
-        _spellManager.RegisterSpell(new WindSpell());
+        _spellManager.RegisterSpells(_spells.ToList());
     }
 
     public void Equip(PlayerCharacter player)
@@ -42,6 +49,19 @@ public class Staff : MonoBehaviour
             Debug.LogError($"{spellId} not found.");
     }
 
+    public List<SpellBase> GetInitialSpells()
+    {
+        var result = new List<SpellBase>();
+
+        foreach (var spell in _spells)
+        {
+            if (_initialSpells.Where(s => s == spell.Id).Any())
+                result.Add(spell);
+        }
+
+        return result;
+    }
+
     public bool TryStartUsage()
     {
         if (CurrentSpell == null || Owner == null)
@@ -60,12 +80,12 @@ public class Staff : MonoBehaviour
         return true;
     }
 
-    public void StartChoosingSpell()
+    public void StartSpellChoosing()
     {
         OnStartSpellSelection?.Invoke();
     }
 
-    public void StopChoosingSpell()
+    public void StopSpellChoosing()
     {
         OnEndSpellSelection?.Invoke();
     }

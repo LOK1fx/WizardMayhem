@@ -13,8 +13,6 @@ public class PlayerCharacter : MonoBehaviour
     [SerializeField] private Staff _currentStaff;
     [SerializeField] private ESpellId _startupSpellId = ESpellId.None;
 
-    private float _yaw;
-
 
     private void Start()
     {
@@ -26,7 +24,6 @@ public class PlayerCharacter : MonoBehaviour
     private void Update()
     {
         ProcessInput();
-        RotatePlayer();
     }
 
     private void ProcessInput()
@@ -36,15 +33,11 @@ public class PlayerCharacter : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Mouse0))
             _currentStaff.TryStopUsage();
 
-        _camera.SetInput(Input.GetAxis("Mouse Y"));
-        _yaw += Input.GetAxis("Mouse X") * _camera.Sensitivity;
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+            _currentStaff.StartSpellChoosing();
+        if (Input.GetKeyUp(KeyCode.Mouse1))
+            _currentStaff.StopSpellChoosing();
 
-        if (_yaw % 360 == 0)
-            _yaw = 0;
-    }
-
-    private void RotatePlayer()
-    {
-        transform.localRotation = Quaternion.Euler(Vector3.up * _yaw);
+        _camera.SetInput(new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")));
     }
 }

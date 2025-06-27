@@ -1,8 +1,16 @@
 using UnityEngine;
 
-public class WindSpell : SpellBase<WindSpellData>
+[Spell(ESpellId.Wind)]
+public class WindSpell : SpellBase
 {
     public override ESpellId Id => ESpellId.Wind;
+    public override string Name => "Wind Spell";
+
+    public float Distance => _distance;
+    public float Force => _force;
+
+    [SerializeField] private float _distance;
+    [SerializeField] private float _force;
 
     private Transform _camera;
     private bool _isActive;
@@ -13,7 +21,7 @@ public class WindSpell : SpellBase<WindSpellData>
         if (_isActive == false)
             return;
 
-        if (Physics.Raycast(_camera.position, _camera.forward, out var hit, Data.Distance, Data.AffectableLayerMask))
+        if (Physics.Raycast(_camera.position, _camera.forward, out var hit, Distance, affectableLayerMask))
         {
             if (hit.collider.TryGetComponent<Rigidbody>(out var rigidbody))
                 _selectedRigidbody = rigidbody;
@@ -31,7 +39,7 @@ public class WindSpell : SpellBase<WindSpellData>
         if (_isActive == false || _selectedRigidbody == null)
             return;
 
-        _selectedRigidbody.AddForce(_camera.forward * Data.Force, ForceMode.Force);
+        _selectedRigidbody.AddForce(_camera.forward * Force, ForceMode.Force);
     }
 
     public override void StartExecution(PlayerCharacter sender)

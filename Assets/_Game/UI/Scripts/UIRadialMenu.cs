@@ -32,11 +32,13 @@ public class UIRadialMenu : MonoBehaviour
         if (_items.Count == 0)
             return;
 
-        for (int i = 0; i < _items.Count; i++)
+        var index = 0;
+        foreach (var item in _items.Values)
         {
-            var position = GetPointPosition(i);
-            
-            _items[i].position = position;
+            var position = GetPointPosition(index);
+            item.position = position;
+
+            index++;
         }
     }
 
